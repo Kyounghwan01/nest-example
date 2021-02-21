@@ -71,3 +71,51 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## 요약
+### service, controller 생성
+1. controller 생성 단축어 -> `nest g co`
+2. service 생성 단축어 -> `nest g se`
+
+### params, body, query
+1. body => @Body()
+2. queryString => @Query("year")
+3. params => @Params("id")
+
+### db entities (스키마) 정의
+1. module마다 entities 파일을 정의 
+- movies/entities/movie.entities.ts
+
+```ts
+// 서비스로 보내고 받는 인터페이스  만듬, 실제는 db 모델 들어감 (스키마)
+
+export class Movie {
+  id: number;
+  title: string;
+  year: number;
+  genres: string[];
+}
+```
+
+### controller에 사용할 service import
+express에서는 `import service from './movies.service.ts'`로 가져오겠지만
+
+nest에서는 위와 같이 가져오지 않고, `constructor`를 사용하여 `MoviesService ` 클래스를 가져와 사용한다
+```ts {3}
+@Controller('movies')
+export class MoviesController {
+  constructor(private readonly moviceService: MoviesService) {}
+
+  @Get()
+  getAll(): Movie[] {
+    return this.moviceService.getAll();
+  }
+}
+```
+
+controller에 service를 넣기 전 DI를 추가해야한다.
+
+### nest 장점
+status-code를 정의하지 않아도 알아서 nest에서 정의해준다
+
+NotFoundException 메소드로 에러 핸들링 가능하다
